@@ -20,6 +20,13 @@ public class Character : Unit
 
     private Bullet bullet;
 
+    [SerializeField]
+    public GameObject blood;
+
+    private Vector3 bloodPosition;
+
+    private List<GameObject> allBlood = new List<GameObject>();
+
     private CharState State
     {
         get { return (CharState) animator.GetInteger("State"); }
@@ -35,6 +42,10 @@ public class Character : Unit
         sprite = GetComponentInChildren<SpriteRenderer>();
 
         bullet = Resources.Load<Bullet>("Bullet");
+
+        bloodPosition = transform.position;
+
+        //blood = GetComponent<GameObject>();
     }
 
     private void FixedUpdate()
@@ -50,6 +61,17 @@ public class Character : Unit
         if (Input.GetButtonDown("Fire1")) Shoot();
         if (Input.GetButton("Horizontal")) Run();
         if (isGrounded && Input.GetButton("Jump")) Jump();
+
+        if((allBlood != null) && (allBlood.Count > 0))
+        {
+            foreach(GameObject bloodOne in allBlood)
+            {
+                bloodOne.transform.position = transform.position;
+
+                //ParticleSystem particle = bloodOne.GetComponentInChildren(ParticleSystem);
+                //if (particle.duration)
+            }
+        }
     }
 
     private void Run()
@@ -98,7 +120,11 @@ public class Character : Unit
         rigidbody.velocity = Vector3.zero;
         rigidbody.AddForce(transform.up * 7.0f, ForceMode2D.Impulse);
 
-        Debug.Log(lives);
+        GameObject newBlood = Instantiate(blood, transform.position, blood.transform.rotation) as GameObject;
+
+        allBlood.Add(newBlood);
+
+        Debug.Log("blood count=" + allBlood.Count);
     }
 
 }
