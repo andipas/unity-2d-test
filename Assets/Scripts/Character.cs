@@ -20,6 +20,11 @@ public class Character : Unit
 
     private Bullet bullet;
 
+    [SerializeField]
+    public AudioClip soundJump;
+    public AudioClip soundShoot;
+    //public AudioClip soundStep;
+
     //[SerializeField]
     //public GameObject blood;
     //private Vector3 bloodPosition;
@@ -88,6 +93,13 @@ public class Character : Unit
         State = CharState.Jump;
 
         rigidbody.AddForce(transform.up * jumpForce, ForceMode2D.Impulse);
+
+        MakeSound(soundJump);
+    }
+
+    public void MakeSound(AudioClip audio)
+    {
+        AudioSource.PlayClipAtPoint(audio, transform.position);
     }
 
     private void Shoot()
@@ -100,6 +112,8 @@ public class Character : Unit
         Bullet newBullet = Instantiate(bullet, position, bullet.transform.rotation) as Bullet;
 
         newBullet.Direction = newBullet.transform.right * (sprite.flipX ? -1.0f : 1.0f);
+
+        MakeSound(soundShoot);
     }
 
     private void CheckGrounded()
